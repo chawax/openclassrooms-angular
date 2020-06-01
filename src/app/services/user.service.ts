@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { User } from '../models/user.model';
+import { User } from '../models/User.model';
 
 export class UserService {
   users: User[] = [
@@ -7,7 +7,7 @@ export class UserService {
       firstname: 'Olivier',
       lastname: 'Thierry',
       email: 'othierry@asi.fr',
-      drinkPreference: 'bière',
+      drinkPreference: 'Coca',
       hobbies: ['photo', 'football'],
     },
   ];
