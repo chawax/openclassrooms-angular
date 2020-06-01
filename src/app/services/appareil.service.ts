@@ -1,25 +1,14 @@
 import { Subject } from 'rxjs/Subject';
+import { Injectable } from '@angular/core';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
+@Injectable()
 export class AppareilService {
   appareilsSubject = new Subject<any[]>();
 
-  private appareils: any[] = [
-    {
-      id: 1,
-      name: 'Machine à laver',
-      status: 'éteint',
-    },
-    {
-      id: 2,
-      name: 'Télévision',
-      status: 'allumé',
-    },
-    {
-      id: 3,
-      name: 'Ordinateur',
-      status: 'éteint',
-    },
-  ];
+  constructor(private httpClient: HttpClient) {}
+
+  private appareils: any[] = [];
 
   emitAppareilsSubject() {
     this.appareilsSubject.next(this.appareils.slice());
@@ -67,5 +56,35 @@ export class AppareilService {
     appareilObject.id = this.appareils[this.appareils.length - 1].id + 1;
     this.appareils.push(appareilObject);
     this.emitAppareilsSubject();
+  }
+
+  saveAppareilsToServer() {
+    this.httpClient
+      .put(
+        'https://openclassrooms-f971a.firebaseio.com/appareils.json',
+        this.appareils
+      )
+      .subscribe(
+        () => {
+          console.log('enregistrement terminé');
+        },
+        (error: any) => {
+          console.log('erreur de sauvegarde ' + error);
+        }
+      );
+  }
+
+  getAppareilsFromServer() {
+    this.httpClient
+      .get<any[]>('https://openclassrooms-f971a.firebaseio.com/appareils.json')
+      .subscribe(
+        (response) => {
+          this.appareils = response;
+          this.emitAppareilsSubject();
+        },
+        (error: any) => {
+          console.log('erreur de chargement ' + error);
+        }
+      );
   }
 }
